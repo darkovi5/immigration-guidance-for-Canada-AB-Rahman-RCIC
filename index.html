@@ -124,7 +124,33 @@
       font-size: 13px;
     }
     
-  </style>
+  .music-widget {
+  position: fixed;
+  right: 12px;
+  bottom: 20px;
+  z-index: 99999;
+  width: 215px;
+  padding: 12px;
+  border-radius: 18px;
+  color: white;
+  background: linear-gradient(135deg,#38116b,#e83e8c);
+  box-shadow: 0 0 12px #e83e8c, 0 0 25px #8b5cf6;
+  font-family: Arial,sans-serif;
+  animation: musicGlow 1.8s infinite alternate;
+}
+@keyframes musicGlow {
+  from { box-shadow: 0 0 8px #e83e8c; }
+  to { box-shadow: 0 0 24px #a855f7,0 0 32px #e83e8c; }
+}
+.music-title { font-size: 14px; font-weight: bold; }
+.music-caption { font-size: 12px; margin-top: 7px; line-height: 1.6; }
+.music-controls { display:flex; align-items:center; gap:10px; margin-top:8px; }
+.music-controls button {
+  border:0; border-radius:50%; width:36px; height:36px;
+  background:#fff; color:#7c2d92; font-size:16px; cursor:pointer;
+}
+.music-status { font-size:11px; }
+      </style>
 </head>
 
 <body>
@@ -343,6 +369,22 @@
   </div>
 </section>
 
+        <!-- মিউজিক -->
+<div class="music-widget">
+  <div class="music-title">🎵 আপনার মিউজিক</div>
+  <div class="music-caption">
+    🎶 সুন্দর মুহূর্তগুলো উপভোগ করুন,
+    সুরের সঙ্গে কাটুক আপনার সময়।
+  </div>
+  <div class="music-controls">
+    <button id="musicBtn" aria-label="মিউজিক চালু বা বন্ধ করুন">▶</button>
+    <span class="music-status" id="musicStatus">মিউজিক চালু করতে চাপ দিন</span>
+  </div>
+</div>
+
+<audio id="myMusic" loop preload="auto">
+  <source src="https://www.image2url.com/r2/default/files/1791831004247-10d47b7a-21dc-45ac-b23c-6fcb402c5f74.mp3" type="audio/mpeg">
+  </audio>
 
 <!-- =========================================================
      TRUST BAR
@@ -1034,6 +1076,35 @@ document.querySelectorAll(".faq-item").forEach(faq => { if (faq !== item) { faq.
  function () { if (successMsg) { successMsg.classList.remove("hidden"); 
  }
  });
+const audio = document.getElementById("myMusic");
+const btn = document.getElementById("musicBtn");
+const statusText = document.getElementById("musicStatus");
+
+audio.volume = 0.4;
+
+// পেজ খুললে অটো-প্লে চেষ্টা করবে
+audio.play().then(() => {
+  btn.textContent = "Ⅱ";
+  statusText.textContent = "মিউজিক চলছে 🎵";
+}).catch(() => {
+  statusText.textContent = "মিউজিক চালু করতে চাপ দিন";
+});
+
+btn.addEventListener("click", async () => {
+  if (audio.paused) {
+    try {
+      await audio.play();
+      btn.textContent = "Ⅱ";
+      statusText.textContent = "মিউজিক চলছে 🎵";
+    } catch (error) {
+      statusText.textContent = "অডিও লিংক পরীক্ষা করুন";
+    }
+  } else {
+    audio.pause();
+    btn.textContent = "▶";
+    statusText.textContent = "মিউজিক বন্ধ আছে";
+  }
+});
 </script> 
 </body>
 </html>
